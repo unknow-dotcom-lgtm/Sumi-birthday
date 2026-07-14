@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Romantic Joke Generator 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Hearts Background */
+        .hearts-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            color: rgba(255, 105, 180, 0.3);
+            font-size: 2rem;
+            animation: float 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateY(-100px) rotate(20deg); opacity: 0.6; }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 45px;
+            max-width: 650px;
+            width: 100%;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
+            z-index: 10;
+            position: relative;
+            border: 2px solid rgba(255, 182, 193, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .emoji {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            animation: heartbeat 1.2s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #e73c7e 0%, #ee7752 50%, #23a6d5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            color: #e73c7e;
+            font-size: 1.15rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .music-control {
+            text-align: center;
+            margin: 25px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(231, 60, 126, 0.1), rgba(238, 119, 82, 0.1));
+            border-radius: 15px;
+            border: 2px solid rgba(231, 60, 126, 0.2);
+        }
+
+        .music-control label {
+            color: #333;
+            font-weight: 600;
+            margin-right: 15px;
+            font-size: 1.05rem;
+        }
+
+        .music-toggle {
+            background: linear-gradient(135deg, #e73c7e 0%, #ee7752 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(231, 60, 126, 0.3);
+            font-size: 1rem;
+        }
+
+        .music-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(231, 60, 126, 0.4);
+        }
+
+        .music-toggle.playing {
+            background: linear-gradient(135deg, #23d5ab 0%, #23a6d5 100%);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 30px 0;
+            font-size: 0.95rem;
+        }
+
+        .feature {
+            background: linear-gradient(135deg, rgba(231, 60, 126, 0.05), rgba(238, 119, 82, 0.05));
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            color: #666;
+            border-left: 4px solid #e73c7e;
+        }
+
+        .feature-icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .category-selector {
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .category-selector label {
+            color: #333;
+            font-weight: 600;
+            margin-right: 15px;
+            font-size: 1.05rem;
+        }
+
+        .category-selector select {
+            padding: 10px 18px;
+            border: 2px solid #e73c7e;
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #333;
+            cursor: pointer;
+            background: white;
+            font-weight: 500;
+        }
+
+        .category-selector select:focus {
+            outline: none;
+            border-color: #ee7752;
+            box-shadow: 0 0 8px rgba(231, 60, 126, 0.4);
+        }
+
+        .joke-box {
+            background: linear-gradient(135deg, #e73c7e 0%, #ee7752 50%, #23a6d5 100%);
+            color: white;
+            padding: 35px;
+            border-radius: 18px;
+            margin: 30px 0;
+            min-height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(231, 60, 126, 0.35);
+            transition: all 0.3s ease;
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .joke-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at top right, rgba(255,255,255,0.1), transparent);
+            pointer-events: none;
+        }
+
+        .joke-box:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(231, 60, 126, 0.4);
+        }
+
+        .joke-text {
+            font-size: 1.4rem;
+            line-height: 1.7;
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+        }
+
+        .joke-type {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.25);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            margin-top: 18px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .loading {
+            text-align: center;
+            color: #e73c7e;
+            font-size: 1.15rem;
+        }
+
+        .spinner {
+            border: 4px solid rgba(231, 60, 126, 0.2);
+            border-top: 4px solid #e73c7e;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 25px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #e73c7e 0%, #ee7752 100%);
+            color: white;
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(231, 60, 126, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #e73c7e;
+            border: 2.5px solid #e73c7e;
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(231, 60, 126, 0.05);
+            transform: translateY(-3px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            padding: 18px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .joke-counter {
+            text-align: center;
+            color: #e73c7e;
+            font-size: 1rem;
+            margin-top: 25px;
+            font-weight: 600;
+        }
+
+        .joke-counter strong {
+            color: #ee7752;
+            font-size: 1.3rem;
+        }
+
+        audio {
+            display: none;
+        }
+
+        .volume-indicator {
+            display: inline-block;
+            margin-left: 10px;
+            font-size: 1.2rem;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .joke-text {
+                font-size: 1.15rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                min-width: 100%;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Hearts Background -->
+    <div class="hearts-bg" id="heartsContainer"></div>
+
+    <!-- Background Music -->
+    <audio id="backgroundMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <div class="header">
+            <div class="emoji">💕</div>
+            <h1>Romantic Jokes</h1>
+            <p class="subtitle">Laugh with Love & Romance ✨</p>
+        </div>
+
+        <div class="music-control">
+            <label>🎵 Background Music:</label>
+            <button class="music-toggle" id="musicToggle" onclick="toggleMusic()">🎧 Turn On Music</button>
+            <span class="volume-indicator" id="volumeIndicator" style="display: none;">♫</span>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">💑</div>
+                <div>Romantic Vibes</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎵</div>
+                <div>Love Music</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">😂</div>
+                <div>Hilarious Jokes</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">💫</div>
+                <div>Magical Moments</div>
+            </div>
+        </div>
+
+        <div class="category-selector">
+            <label for="categorySelect">Choose Joke Type:</label>
+            <select id="categorySelect">
+                <option value="any">Any Joke</option>
+                <option value="general">General</option>
+                <option value="knock-knock">Knock-Knock</option>
+                <option value="programming">Programming</option>
+            </select>
+        </div>
+
+        <div class="joke-box" id="jokeBox">
+            <div class="joke-text">💕 Click below to hear a funny joke with romantic vibes! 💕</div>
+        </div>
+
+        <div id="errorMessage"></div>
+
+        <div class="button-group">
+            <button class="btn-primary" id="getJokeBtn" onclick="fetchJoke()">Get a Joke 😂</button>
+            <button class="btn-secondary" id="shareBtn" onclick="shareJoke()" style="display: none;">Share with Love 💌</button>
+        </div>
+
+        <div class="joke-counter">
+            <p>Laughs shared together: <strong id="jokeCount">0</strong> 💕</p>
+        </div>
+    </div>
+
+    <script>
+        let jokeCount = 0;
+        let currentJoke = {
+            setup: '',
+            delivery: '',
+            joke: ''
+        };
+        let musicPlaying = false;
+
+        const jokeBox = document.getElementById('jokeBox');
+        const getJokeBtn = document.getElementById('getJokeBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const categorySelect = document.getElementById('categorySelect');
+        const jokeCountDisplay = document.getElementById('jokeCount');
+        const musicToggle = document.getElementById('musicToggle');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const volumeIndicator = document.getElementById('volumeIndicator');
+
+        // Create floating hearts
+        function createFloatingHearts() {
+            const heartsContainer = document.getElementById('heartsContainer');
+            const hearts = ['💕', '❤️', '💖', '💗', '💝', '✨'];
+
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = window.innerHeight + 'px';
+                heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                heart.style.animationDelay = Math.random() * 0.5 + 's';
+
+                heartsContainer.appendChild(heart);
+
+                setTimeout(() => {
+                    heart.remove();
+                }, 7000);
+            }, 800);
+        }
+
+        // Toggle background music
+        function toggleMusic() {
+            if (musicPlaying) {
+                backgroundMusic.pause();
+                musicPlaying = false;
+                musicToggle.classList.remove('playing');
+                musicToggle.innerHTML = '🎧 Turn On Music';
+                volumeIndicator.style.display = 'none';
+            } else {
+                backgroundMusic.volume = 0.3; // 30% volume for better UX
+                backgroundMusic.play().catch(err => {
+                    console.log('Audio playback failed:', err);
+                    alert('🎵 Music could not be played. Please check your browser settings.');
+                });
+                musicPlaying = true;
+                musicToggle.classList.add('playing');
+                musicToggle.innerHTML = '🎧 Music Playing';
+                volumeIndicator.style.display = 'inline-block';
+            }
+        }
+
+        async function fetchJoke() {
+            getJokeBtn.disabled = true;
+            shareBtn.style.display = 'none';
+            errorMessage.innerHTML = '';
+
+            jokeBox.innerHTML = '<div class="loading"><div class="spinner"></div><p>🎵 Loading a romantic joke for you...</p></div>';
+
+            try {
+                const category = categorySelect.value;
+                let url = 'https://official-joke-api.appspot.com/random_joke';
+
+                if (category !== 'any') {
+                    url = `https://official-joke-api.appspot.com/jokes/${category}/random`;
+                }
+
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch joke. Please try again.');
+                }
+
+                const data = await response.json();
+                const joke = Array.isArray(data) ? data[0] : data;
+
+                currentJoke = {
+                    setup: joke.setup || '',
+                    delivery: joke.delivery || '',
+                    joke: joke.joke || '',
+                    type: joke.type || 'general'
+                };
+
+                displayJoke(joke);
+                jokeCount++;
+                jokeCountDisplay.textContent = jokeCount;
+                shareBtn.style.display = 'inline-block';
+
+            } catch (error) {
+                errorMessage.innerHTML = `<div class="error-message">⚠️ ${error.message}</div>`;
+                jokeBox.innerHTML = '<div class="joke-text">💔 Oops! Something went wrong. Let\'s try again with love! 💕</div>';
+            } finally {
+                getJokeBtn.disabled = false;
+            }
+        }
+
+        function displayJoke(joke) {
+            let jokeContent = '';
+
+            if (joke.setup && joke.delivery) {
+                jokeContent = `
+                    <div>
+                        <p style="margin-bottom: 18px;"><strong>💕 ${joke.setup}</strong></p>
+                        <p style="font-style: italic; margin-bottom: 18px; color: rgba(255,255,255,0.95);">${joke.delivery}</p>
+                        <div class="joke-type">💫 ${joke.type || 'General'}</div>
+                    </div>
+                `;
+            } else if (joke.joke) {
+                jokeContent = `
+                    <div>
+                        <p>💕 ${joke.joke}</p>
+                        <div class="joke-type">💫 ${joke.type || 'General'}</div>
+                    </div>
+                `;
+            }
+
+            jokeBox.innerHTML = jokeContent;
+        }
+
+        function shareJoke() {
+            let jokeText = '';
+
+            if (currentJoke.setup && currentJoke.delivery) {
+                jokeText = `${currentJoke.setup}\n\n${currentJoke.delivery}`;
+            } else {
+                jokeText = currentJoke.joke;
+            }
+
+            if (navigator.share) {
+                navigator.share({
+                    title: '💕 Romantic Joke for You!',
+                    text: jokeText,
+                }).catch(err => console.log('Error sharing:', err));
+            } else {
+                navigator.clipboard.writeText(jokeText).then(() => {
+                    alert('✅ Joke copied! Share it with your special someone! 💕');
+                }).catch(err => {
+                    console.error('Failed to copy:', err);
+                    alert('Failed to copy joke');
+                });
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            createFloatingHearts();
+            fetchJoke();
+        });
+
+        // Allow pressing Enter to get a new joke
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !getJokeBtn.disabled) {
+                fetchJoke();
+            }
+        });
+
+        // Stop music when page unloads
+        window.addEventListener('beforeunload', () => {
+            if (musicPlaying) {
+                backgroundMusic.pause();
+            }
+        });
+    </script>
+
+</body>
+</html>
