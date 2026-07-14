@@ -1,0 +1,523 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>A Special Invitation ✨</title>  
+    <style>  
+        /* Base Styling & Reset */  
+        * {  
+            box-sizing: border-box;  
+            margin: 0;  
+            padding: 0;  
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;  
+        }  
+  
+        body {  
+            background: radial-gradient(circle at bottom, #111122 0%, #050508 100%);  
+            color: #ffffff;  
+            min-height: 100vh;  
+            display: flex;  
+            justify-content: center;  
+            align-items: center;  
+            overflow-x: hidden;  
+            perspective: 1000px;  
+        }  
+  
+        /* Ambient Stars Background */  
+        .stars {  
+            position: fixed;  
+            top: 0;  
+            left: 0;  
+            width: 100%;  
+            height: 100%;  
+            pointer-events: none;  
+            background-image:   
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),  
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),  
+                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);  
+            background-size: 550px 550px, 350px 350px, 250px 250px;  
+            background-position: 0 0, 40px 60px, 130px 270px;  
+            opacity: 0.3;  
+            z-index: 0;  
+        }  
+  
+        /* Container Card */  
+        .card {  
+            background: rgba(15, 15, 25, 0.75);  
+            backdrop-filter: blur(12px);  
+            -webkit-backdrop-filter: blur(12px);  
+            border: 1px solid rgba(255, 255, 255, 0.08);  
+            border-radius: 24px;  
+            padding: 40px 30px;  
+            width: 90%;  
+            max-width: 480px;  
+            text-align: center;  
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);  
+            z-index: 10;  
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);  
+            position: absolute;  
+            opacity: 0;  
+            transform: scale(0.95) translateY(20px);  
+            pointer-events: none;  
+        }  
+  
+        /* Active Page Class */  
+        .card.active {  
+            opacity: 1;  
+            transform: scale(1) translateY(0);  
+            pointer-events: all;  
+            position: relative;  
+        }  
+  
+        /* Typography */  
+        h1 {  
+            font-size: 1.8rem;  
+            margin-bottom: 20px;  
+            font-weight: 700;  
+            letter-spacing: -0.5px;  
+            background: linear-gradient(135deg, #ffffff 0%, #e0e0ff 100%);  
+            -webkit-background-clip: text;  
+            -webkit-text-fill-color: transparent;  
+        }  
+  
+        p {  
+            font-size: 1.05rem;  
+            line-height: 1.6;  
+            color: #ccccff;  
+            margin-bottom: 24px;  
+            font-weight: 300;  
+        }  
+  
+        .emoji-header {  
+            font-size: 3rem;  
+            margin-bottom: 15px;  
+            display: inline-block;  
+            animation: float 4s ease-in-out infinite;  
+        }  
+  
+        /* Countdown & Alerts */  
+        .timer {  
+            font-size: 1.5rem;  
+            font-weight: bold;  
+            letter-spacing: 1px;  
+            color: #ff5e7e;  
+            background: rgba(255, 94, 126, 0.1);  
+            border: 1px solid rgba(255, 94, 126, 0.2);  
+            padding: 12px;  
+            border-radius: 12px;  
+            margin-bottom: 25px;  
+            display: inline-block;  
+            width: 100%;  
+        }  
+  
+        .note {  
+            font-size: 0.9rem;  
+            color: #ff9eb5;  
+            background: rgba(255, 158, 181, 0.08);  
+            border-radius: 8px;  
+            padding: 10px;  
+            margin-bottom: 25px;  
+            border-left: 3px solid #ff9eb5;  
+            text-align: left;  
+        }  
+  
+        .alert-box {  
+            background: rgba(255, 255, 255, 0.05);  
+            border: 1px dashed rgba(255, 255, 255, 0.15);  
+            border-radius: 12px;  
+            padding: 15px;  
+            margin: 20px 0;  
+            text-align: left;  
+        }  
+  
+        /* Buttons & Forms */  
+        button {  
+            width: 100%;  
+            padding: 16px;  
+            border-radius: 14px;  
+            border: none;  
+            font-size: 1rem;  
+            font-weight: 600;  
+            cursor: pointer;  
+            transition: all 0.3s ease;  
+            margin-top: 10px;  
+            display: flex;  
+            align-items: center;  
+            justify-content: center;  
+            gap: 8px;  
+        }  
+  
+        .btn-primary {  
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);  
+            color: white;  
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);  
+        }  
+  
+        .btn-primary:hover:not(:disabled) {  
+            transform: translateY(-2px);  
+            box-shadow: 0 12px 24px rgba(108, 92, 231, 0.4);  
+        }  
+  
+        .btn-primary:disabled {  
+            background: #2a2a35;  
+            color: #666;  
+            cursor: not-allowed;  
+            box-shadow: none;  
+        }  
+  
+        .btn-secondary {  
+            background: rgba(255, 255, 255, 0.06);  
+            color: #ffffff;  
+            border: 1px solid rgba(255, 255, 255, 0.1);  
+        }  
+  
+        .btn-secondary:hover {  
+            background: rgba(255, 255, 255, 0.12);  
+        }  
+  
+        /* Inputs */  
+        .form-group {  
+            margin-bottom: 20px;  
+            text-align: left;  
+        }  
+  
+        .form-group label {  
+            display: block;  
+            font-size: 0.9rem;  
+            font-weight: 500;  
+            margin-bottom: 8px;  
+            color: #a29bfe;  
+        }  
+  
+        .form-group input {  
+            width: 100%;  
+            padding: 12px 16px;  
+            background: rgba(255, 255, 255, 0.05);  
+            border: 1px solid rgba(255, 255, 255, 0.12);  
+            border-radius: 10px;  
+            color: white;  
+            font-size: 0.95rem;  
+            transition: all 0.3s ease;  
+        }  
+  
+        .form-group input:focus {  
+            outline: none;  
+            border-color: #a29bfe;  
+            background: rgba(255, 255, 255, 0.08);  
+        }  
+  
+        /* Custom Modal (Pop-up) */  
+        .modal-overlay {  
+            position: fixed;  
+            top: 0;  
+            left: 0;  
+            width: 100%;  
+            height: 100%;  
+            background: rgba(0, 0, 0, 0.8);  
+            backdrop-filter: blur(8px);  
+            display: flex;  
+            justify-content: center;  
+            align-items: center;  
+            z-index: 1000;  
+            opacity: 0;  
+            pointer-events: none;  
+            transition: opacity 0.4s ease;  
+        }  
+  
+        .modal-overlay.active {  
+            opacity: 1;  
+            pointer-events: all;  
+        }  
+  
+        .modal {  
+            background: #151525;  
+            border: 1px solid rgba(255, 255, 255, 0.1);  
+            border-radius: 20px;  
+            padding: 30px;  
+            max-width: 400px;  
+            width: 85%;  
+            text-align: center;  
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);  
+            transform: scale(0.9);  
+            transition: transform 0.4s ease;  
+        }  
+  
+        .modal-overlay.active .modal {  
+            transform: scale(1);  
+        }  
+  
+        /* Dynamic Hearts Animation */  
+        .hearts-container {  
+            position: fixed;  
+            top: 0;  
+            left: 0;  
+            width: 100%;  
+            height: 100%;  
+            pointer-events: none;  
+            z-index: 5;  
+            overflow: hidden;  
+        }  
+  
+        .heart {  
+            position: absolute;  
+            color: rgba(255, 94, 126, 0.6);  
+            font-size: 1.5rem;  
+            animation: rise 5s linear infinite;  
+        }  
+  
+        /* Animations */  
+        @keyframes float {  
+            0%, 100% { transform: translateY(0); }  
+            50% { transform: translateY(-10px); }  
+        }  
+  
+        @keyframes rise {  
+            0% { transform: translateY(105vh) rotate(0deg); opacity: 1; }  
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }  
+        }  
+  
+        @keyframes pulse-soft {  
+            0%, 100% { opacity: 0.15; }  
+            50% { opacity: 0.3; }  
+        }  
+    </style>  
+</head>  
+<body>  
+  
+    <div class="stars"></div>  
+    <div class="hearts-container" id="heartsContainer"></div>  
+  
+    <!-- PAGE 1: The Midnight Lock -->  
+    <div class="card active" id="page1">  
+        <div class="emoji-header">🔒</div>  
+        <h1>Private Access Required ⏱️</h1>  
+        <p>You have received an exclusive invitation to a private digital space curated entirely for you. Access is strictly timed to the exact, magical moment your special day begins.</p>  
+        <div class="note">  
+            ⚠️ <strong>NOTE:</strong> Please read each section carefully and choose your path forward, beautiful.  
+        </div>  
+        <div class="timer" id="countdownTimer">Loading Countdown...</div>  
+        <button class="btn-primary" id="lockButton" disabled onclick="nextPage(2)">  
+            Proceed to the Next Chapter 🔓  
+        </button>  
+    </div>  
+  
+    <!-- PAGE 2: Reconnecting & Feeling Sorry -->  
+    <div class="card" id="page2">  
+        <div class="emoji-header">📡</div>  
+        <h1>Signal Restored...</h1>  
+        <p>Did you miss me as much as I missed you? 😉</p>  
+        <p>I know my radar went completely quiet for the last 6 months, and I know that silence may have caused doubt or hurt. I am so deeply, truly sorry for the distance.</p>  
+        <p>I know I haven't fully earned your forgiveness just yet, but through it all, my thoughts have inevitably pulled me right back to your side tonight. I simply could not let the most captivating person in my world celebrate her birthday without trying to reclaim my spot as the guy who is completely crazy about you. Please try to forgive me? 🥺</p>  
+        <button class="btn-primary" onclick="nextPage(3)">Next: Apologization 🙏</button>  
+    </div>  
+  
+    <!-- PAGE 3: Forget Everything -->  
+    <div class="card" id="page3">  
+        <div class="emoji-header">👑</div>  
+        <h1>Today, We Forget Everything Else ✨</h1>  
+        <p>Whatever distance, silence, or doubts we had—let's leave them behind for today. Today is entirely about you.</p>  
+        <p>You have successfully navigated another beautiful year, and let's be entirely honest—the absolute highlight of my year has simply been the privilege of knowing you and holding you close in my thoughts. No matter what, nothing can change the beautiful truth that your heart is the only place I want to be.</p>  
+        <button class="btn-primary" onclick="nextPage(4)">Let Me Show You How Much I Care ✨</button>  
+    </div>  
+  
+    <!-- PAGE 4: How Much I Care & The Surprise -->  
+    <div class="card" id="page4">  
+        <div class="emoji-header">🥞</div>  
+        <h1>Your Only Responsibilities for Today, My Queen:</h1>  
+        <p>Since today is entirely dedicated to honoring you, you are officially requested to turn off the rest of the world, rest under a mountain of blankets for as long as your gorgeous heart desires, and indulge in absolutely every single one of your favorite treats.</p>  
+        <p><em>Calories legally do not exist when you are this breathtaking.</em> I care about you more than words can say, and I am counting down the exact seconds until I can hold you tight.</p>  
+        <button class="btn-primary" onclick="nextPage(5)">Reveal Your Birthday Surprise 🍿</button>  
+    </div>  
+  
+    <!-- PAGE 5: The Reconciliation (Flirty Buttons) -->  
+    <div class="card" id="page5">  
+        <div class="emoji-header">🥺</div>  
+        <h1>A Moment of Absolute Honesty...</h1>  
+        <p>Knowing how deeply and beautifully you feel things, I want to look you in the eyes and gently ask—are you ready to forgive your favorite distraction, or do I still need to earn my way back into your good graces?</p>  
+        <button class="btn-primary" onclick="nextPage(6)">  
+            I will forgive you... but only if you promise to stay by my side until my very last breath. 🤍  
+        </button>  
+        <button class="btn-secondary" onclick="nextPage('5.5')">  
+            You're cute, but I'm definitely making you work a little harder to get out of trouble. 😜  
+        </button>  
+    </div>  
+  
+    <!-- PAGE 5.5: System Override -->  
+    <div class="card" id="page5.5">  
+        <div class="emoji-header">🛑</div>  
+        <h1>System Override: Connection Re-established</h1>  
+        <p style="color: #ff5e7e; font-weight: bold;">Nice try, but the system gently refuses to let you stay away from me. 💘</p>  
+        <p><strong>Access Denied</strong> because this website has completely bypassed your hesitation. It simply refuses to let you pout or hold onto any lingering doubts on your birthday.</p>  
+        <p>This means the universe has made the choice for us—it gently insists that you forgive me, that you smile at this screen, and honestly, that you open your heart to the guy who built this just to see you happy.</p>  
+        <button class="btn-primary" onclick="nextPage(6)">Accept Terms & View Our Plans 🌙</button>  
+    </div>  
+  
+    <!-- PAGE 6: The Plot Twist & Custom Date Plan Form -->  
+    <div class="card" id="page6">  
+        <div class="emoji-header">✈️</div>  
+        <h1>My Biggest Mistake & The Real Gift...</h1>  
+        <p>Leaving a girl as precious, sensitive, and breathtaking as you in the dark for 6 months was a profound mistake. Because a standard digital message could never suffice for someone who deserves the world, the real gift is that <strong>I am traveling to come see you in person.</strong></p>  
+          
+        <div class="alert-box">  
+            <span style="font-size: 1.2rem;">📢</span> <strong>A Very Important Note (Just for You):</strong><br>  
+            Honestly, I'm so incredibly excited to hear your voice that I'm counting down the exact seconds! I will be calling you by noon on <strong>July 19th</strong>. So please, don't make me wait, keep your phone close, and <strong>do not ignore my call!</strong> I can't wait to talk to my favorite girl. 📞✨😉  
+        </div>  
+  
+        <form id="dateForm" onsubmit="handleFormSubmit(event)">  
+            <div class="form-group">  
+                <label>📍 Where shall we arrange our primary meetup?</label>  
+                <input type="text" id="meetup" required placeholder="Describe our dream spot...">  
+            </div>  
+            <div class="form-group">  
+                <label>📅 Which date am I officially picking you up?</label>  
+                <input type="date" id="pickupDate" required>  
+            </div>  
+            <div class="form-group">  
+                <label>🍿 Which film are we watching while I hold your hand?</label>  
+                <input type="text" id="movie" required placeholder="Choose a cozy movie...">  
+            </div>  
+            <div class="form-group">  
+                <label>🍽️ Which restaurant are we visiting right after?</label>  
+                <input type="text" id="restaurant" required placeholder="Your favorite food spot...">  
+            </div>  
+            <button type="submit" class="btn-primary">Confirm Our Date & Read My Final Wish 💌</button>  
+        </form>  
+    </div>  
+  
+    <!-- PAGE 7: The Eternal Orbit -->  
+    <div class="card" id="page7">  
+        <div class="emoji-header">🌌</div>  
+        <h1>The Greatest Wish for My Whole World.</h1>  
+        <p>You have reached the final destination of this journey, where all the screens fade away and only my true feelings remain.</p>  
+        <p>Happy Birthday, my gorgeous, sensitive queen. On this beautiful day, my greatest wish is for your heart to be filled with the absolute peace, joy, and laughter you so deeply deserve. May this year bring you endless reasons to smile, dreams that come true effortlessly, and the comfort of knowing you are fiercely cherished every single second.</p>  
+        <p>Thank you for letting me back into your world. No matter the distance we've crossed or the silence behind us, you have my complete, undivided devotion from this moment forward. I will never let you drift away again.</p>  
+        <p><em>Countless miles couldn't keep me away, and honestly, I am counting down the minutes because I absolutely cannot wait to finally meet you and hold you in person.</em></p>  
+        <p style="font-weight: bold; color: #a29bfe;">Sleep beautifully tonight, celebrate beautifully tomorrow, and know that I am on my way to you. 🤍✨</p>  
+    </div>  
+  
+    <!-- PAGE 6 Custom Modal Pop-Up -->  
+    <div class="modal-overlay" id="customModal">  
+        <div class="modal">  
+            <div style="font-size: 2.5rem; margin-bottom: 15px;">📞✨</div>  
+            <h2 style="margin-bottom: 10px;">Important Warning!</h2>  
+            <p style="font-size: 0.95rem;">Hey gorgeous, I'll be calling you by noon on <strong>July 19th</strong>. Please keep your line open and don't make me wait! 😉</p>  
+            <button class="btn-primary" onclick="closeModal()">Got it, I'll be waiting! 😘</button>  
+        </div>  
+    </div>  
+  
+    <script>  
+        // Set lock timestamp: July 19th, 2026 at 12:00 AM (00:00:00)  
+        const targetDate = new Date("2026-07-19T00:00:00").getTime();  
+  
+        function updateCountdown() {  
+            const now = new Date().getTime();  
+            const difference = targetDate - now;  
+  
+            const timerElement = document.getElementById("countdownTimer");  
+            const lockBtn = document.getElementById("lockButton");  
+  
+            if (difference <= 0) {  
+                // LOCK LIFTS (Accessible to all)  
+                timerElement.style.display = "none";  
+                lockBtn.disabled = false;  
+                lockBtn.innerHTML = "Proceed to the Next Chapter 🔓";  
+                return true;  
+            } else {  
+                // CALCULATE REMAINING TIME  
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));  
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));  
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));  
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);  
+  
+                timerElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;  
+                lockBtn.disabled = true;  
+                lockBtn.innerHTML = "System Secured until July 19th 🔒";  
+                return false;  
+            }  
+        }  
+  
+        // Run countdown instantly and set interval  
+        const countdownInterval = setInterval(() => {  
+            const unlocked = updateCountdown();  
+            if (unlocked) {  
+                clearInterval(countdownInterval);  
+            }  
+        }, 1000);  
+        updateCountdown();  
+  
+        // Page Navigation Controller  
+        function nextPage(pageNumber) {  
+            // Find current active page  
+            const currentActive = document.querySelector('.card.active');  
+            if (currentActive) {  
+                currentActive.classList.remove('active');  
+            }  
+  
+            // Route to specific page ID  
+            const nextPageID = 'page' + pageNumber;  
+            const targetPage = document.getElementById(nextPageID);  
+              
+            if (targetPage) {  
+                // Slight delay for smooth fade transition  
+                setTimeout(() => {  
+                    targetPage.classList.add('active');  
+                      
+                    // Trigger modal pop-up on page 6 load  
+                    if (pageNumber === 6) {  
+                        openModal();  
+                    }  
+                    // Trigger hearts on page 7  
+                    if (pageNumber === 7) {  
+                        startHearts();  
+                    }  
+                }, 100);  
+            }  
+        }  
+  
+        // Modal triggers  
+        function openModal() {  
+            document.getElementById('customModal').classList.add('active');  
+        }  
+  
+        function closeModal() {  
+            document.getElementById('customModal').classList.remove('active');  
+        }  
+  
+        // Form Submission Logic  
+        function handleFormSubmit(event) {  
+            event.preventDefault();  
+  
+            const meetupVal = document.getElementById('meetup').value;  
+            const pickupVal = document.getElementById('pickupDate').value;  
+            const movieVal = document.getElementById('movie').value;  
+            const restaurantVal = document.getElementById('restaurant').value;  
+  
+            // Optional: Send data to an API or your email here!  
+            console.log("Date Plan Form Submitted:", { meetupVal, pickupVal, movieVal, restaurantVal });  
+  
+            // Proceed to Final Wish Page  
+            nextPage(7);  
+        }  
+  
+        // Floating Hearts effect for the final page  
+        function startHearts() {  
+            const container = document.getElementById('heartsContainer');  
+            setInterval(() => {  
+                const heart = document.createElement('div');  
+                heart.classList.add('heart');  
+                heart.innerHTML = ['🤍', '❤️', '🌸', '✨', '💘'][Math.floor(Math.random() * 5)];  
+                heart.style.left = Math.random() * 100 + 'vw';  
+                heart.style.animationDuration = (Math.random() * 3 + 3) + 's';  
+                heart.style.fontSize = (Math.random() * 1 + 1) + 'rem';  
+                container.appendChild(heart);  
+  
+                // Garbage collect heart elements  
+                setTimeout(() => {  
+                    heart.remove();  
+                }, 6000);  
+            }, 300);  
+        }  
+    </script>  
+</body>  
+</html>
